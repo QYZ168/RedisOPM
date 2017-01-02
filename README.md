@@ -54,6 +54,3 @@ djangocompose_django_1   python manage.py runserver ...   Up      0.0.0.0:8080->
 ```
 
 Now, you can access the welcome page by browser !
-
-
-
