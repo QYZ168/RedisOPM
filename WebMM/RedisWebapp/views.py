@@ -1,11 +1,15 @@
 # coding=utf-8
 from django.shortcuts import render,render_to_response,redirect
 from django.http import HttpResponse,HttpResponseRedirect
-from .vfication import *
+from .rediscache.vfication import *
+from .mysqlcache.conmysql import *
+from .serverstatus.getstat import *
 
 import hashlib
+import datetime
 
 setuser = vf()
+cmy = cmysql()
 
 def regist(request):
     error = False
@@ -64,15 +68,66 @@ def login(request):
     return render(request,'RedisWebapp/login.html',{'error':error})
 
 def index(request):
+    b = gsta()
+    d = b.getmemory()
+    idle = cmy.selidletdb()
+    tem = int(datetime.datetime.now().strftime("%H"))
+    sj = []
+    val = []
+    for i in range(24):
+        if tem > 23:
+            tem = 0
+        sj.append(str(tem))
+        try:
+            val.append(int(idle[str(tem)]))
+        except:
+            val.append(0)
+        tem += 1
     #username = request.COOKIES.get('username','')
     if 'username' in request.session:
         if 'time' in request.session:
             time = request.session.get('time')
             username = request.session.get('username')
-            return render(request,'RedisWebapp/index.html',{'username':username,'time':time})
+            return render(request,'RedisWebapp/index.html',{'username':username,'time':time,'d':d,'sj':sj,'val':val})
+            #return render(request,'RedisWebapp/index.html',locals())
         else:
             username = request.session.get('username')
-            return render(request,'RedisWebapp/index.html',{'username':username})
+            return render(request,'RedisWebapp/index.html',{'username':username,'d':d,'sj':sj,'val':val})
+            #return render(request,'RedisWebapp/index.html',locals())
+    return render(request,'RedisWebapp/login.html')
+#    return HttpResponseRedirect('login.html')
+
+def inset(request):
+    error = False
+    error_1 = False
+    if 'username' in request.session:
+        if request.method == 'POST':
+            if 'startipaddress' in request.POST and 'endipaddress' in request.POST:
+                startip = request.POST['startipaddress']
+                endip = request.POST['endipaddress']
+                hostname = request.POST['hostname']
+                snum = int(startip[6:])
+                enum = int(endip[6:])
+                gip = startip[:-1]
+                gsql = []
+                for i in range(snum,enum+1):
+                    fip = ''
+                    fip = gip + str(i)
+                    results = cmy.selmysql(fip)
+                    if results:
+                        gsql.append(fip)
+                    else:
+                        data = cmy.inmysql(fip,hostname)
+                error_1 = True
+            elif 'ipaddress' in request.POST:
+                hostname = request.POST['hostname']
+                ipaddress = request.POST['ipaddress']
+                results = cmy.selmysql(ipaddress)
+                if not results:
+                    error_1 = cmy.inmysql(ipaddress,hostname)
+                else:
+                    error = True
+        return render(request,'RedisWebapp/inset.html',{'error':error,'error_1':error_1})
     return render(request,'RedisWebapp/login.html')
 
 #def logout(request):
@@ -83,3 +138,4 @@ def index(request):
     #return response
 #    del request.session['username']
 #    return render(request,'RedisWebapp/login.html')
+
