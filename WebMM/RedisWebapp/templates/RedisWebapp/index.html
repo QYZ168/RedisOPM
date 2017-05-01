@@ -1,0 +1,147 @@
+{% extends 'RedisWebapp/base.html' %}
+{% block content %}
+    <h1 class="page-header">list</h1>
+    <div class="row placeholders">
+        <div class="col-xs-6 placeholder">
+            <div id="pic-left" style="min-width:300px;height:300px"></div>
+            <!--<h4>list</h4>
+            <span class="text-muted">someting</span>-->
+        </div>
+        <div class="col-xs-6 placeholder">
+            <div id="pic-right" style="min-winth:600px;height:300px"></div>
+            <!--<h4>list</h4>
+            <span class="text-muted">ssssss</span>-->
+        </div>
+    </div>
+    <h2 class="sub-header">list</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>header</th>
+                    <th>header</th>
+                    <th>header</th>
+                    <th>header</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>5</td>
+                    <td>5</td>
+                    <td>5</td>
+                    <td>5</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        $(function () {
+            $('#pic-left').highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: 'Memory Status'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: false
+                        },
+                        showInLegend: true
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: 'Browser share',
+                    data: [
+                        ['used',   {{ d.used }}],
+                        ['buff/cache',       {{ d.buff }}],
+                        {
+                            name: 'free',
+                            y: {{ d.free }},
+                            sliced: true,
+                            selected: true
+                        },
+                    ]
+                }]
+            });
+        });
+
+        $(function () {
+            $('#pic-right').highcharts({
+                title: {
+                    text: 'CPU IDLE',
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: '',
+                    x: -20
+                },
+                xAxis: {
+                    categories:  {{ sj | safe }}
+                },
+                yAxis: {
+                    title: {
+                        text: '单位%'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    valueSuffix: '%'
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+                    name: 'IDLE',
+                    data: {{ val }}
+                }]
+            });
+        });
+    </script>
+{% endblock content %}

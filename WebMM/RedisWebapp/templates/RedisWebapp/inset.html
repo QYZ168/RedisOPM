@@ -1,0 +1,49 @@
+{% extends 'RedisWebapp/base.html' %}
+{% block content %}
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#single" role="tab" data-toggle="tab">Single</a></li>
+        <li role="presentation"><a href="#multiple" role="tab" data-toggle="tab">Multiple</a></li>
+</ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="single">
+            <div class="login">
+                <form class="login_form" action="" method="post">
+                    {% csrf_token %}
+                    {% if error %}
+                        <p style="color: red;">ip repeat!!!</p>
+                    {% endif %}
+                    {% if error_1 %}
+                        <p style="color: blue;">inset success!!!</p>
+                    {% endif %}
+                    <input type="text" class="form_text" name="hostname" placeholder="Hostname" pattern="^[A-Za-z0-9]\w{4,17}" title=""  required><br>
+                    <input type="text" class="form_text" name="ipaddress" placeholder="IP address" pattern="\d+\.\d+\.\d+\.\d+" title="" required><br>
+                    <div class="btn_t">                                       
+                        <button class="form_button" type="submit">提交</button>
+                    </div>                                                    
+                </form>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="multiple">
+            <div class="login">
+                <form class="login_form" action="" method="post">
+                    {% csrf_token %}
+                    {% if error %}
+                        <p style="color: red;">ip repeat!!!</p>
+                    {% endif %}
+                    {% if error_1 %}
+                        <p style="color: blue;">inset success!!!</p>
+                    {% endif %}
+                    <input type="text" class="form_text" name="hostname" placeholder="Hostname" pattern="^[A-Za-z0-9]\w{4,17}" title=""  required><br>
+                    <input type="text" class="form_text" name="startipaddress" placeholder="The starting IP address " pattern="\d+\.\d+\.\d+\.\d+" title="" required><br>
+                    <input type="text" class="form_text" name="endipaddress" placeholder="End IP address" pattern="\d+\.\d+\.\d+\.\d+" title="" required><br>
+                    <div class="btn_t">                                       
+                        <button class="form_button" type="submit">提交</button>
+                    </div>                                                    
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
